@@ -6,13 +6,13 @@ import '../providers/task_provider.dart';
 class TaskForm extends StatefulWidget {
   final Task? task;
 
-  const TaskForm({Key? key, this.task}) : super(key: key);
+  const TaskForm({super.key, this.task});
 
   @override
-  _TaskFormState createState() => _TaskFormState();
+  TaskFormState createState() => TaskFormState();
 }
 
-class _TaskFormState extends State<TaskForm> {
+class TaskFormState extends State<TaskForm> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -30,46 +30,51 @@ class _TaskFormState extends State<TaskForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          TextFormField(
-            controller: _titleController,
-            decoration: InputDecoration(labelText: 'Title'),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter a title';
-              }
-              return null;
-            },
-          ),
-          SizedBox(height: 16),
-          TextFormField(
-            controller: _descriptionController,
-            decoration: InputDecoration(labelText: 'Description'),
-            maxLines: 4,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter a description';
-              }
-              return null;
-            },
-          ),
-          CheckboxListTile(
-            title: Text('Completed'),
-            value: _isCompleted,
-            onChanged: (bool? value) {
-              setState(() {
-                _isCompleted = value ?? false;
-              });
-            },
-          ),
-          ElevatedButton(
-            onPressed: () => _saveTask(context),
-            child: Text(widget.task == null ? 'Save Task' : 'Update Task'),
-          ),
-        ],
+    return SingleChildScrollView(
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextFormField(
+              controller: _titleController,
+              decoration: const InputDecoration(labelText: 'Title'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a title';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _descriptionController,
+              decoration: const InputDecoration(labelText: 'Description'),
+              maxLines: 4,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a description';
+                }
+                return null;
+              },
+            ),
+            CheckboxListTile(
+              title: const Text('Completed'),
+              value: _isCompleted,
+              onChanged: (bool? value) {
+                setState(() {
+                  _isCompleted = value ?? false;
+                });
+              },
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => _saveTask(context),
+              child: Text(widget.task == null ? 'Save Task' : 'Update Task'),
+            ),
+          ],
+        ),
       ),
     );
   }

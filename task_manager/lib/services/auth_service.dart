@@ -29,11 +29,12 @@ class AuthService {
     }
   }
 
-  Future<void> signOut() async {
+  Future<String?> signOut() async {
     try {
       await _auth.signOut();
+      return null;
     } catch (e) {
-      print(e.toString());
+      return e.toString();
     }
   }
 

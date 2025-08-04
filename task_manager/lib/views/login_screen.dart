@@ -5,11 +5,13 @@ import 'package:task_manager/views/task_list_screen.dart';
 import '../providers/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -31,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: const InputDecoration(labelText: 'Email'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter an email';
@@ -43,10 +45,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _passwordController,
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: const InputDecoration(labelText: 'Password'),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -58,13 +60,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               if (_errorMessage != null) ...[
                 Text(
                   _errorMessage!,
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
               ],
               ElevatedButton(
                 onPressed: () => _authenticate(context),
@@ -88,27 +90,32 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _authenticate(BuildContext context) async {
-    if (_formKey.currentState?.validate() ?? false) {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final email = _emailController.text;
-      final password = _passwordController.text;
+    FocusScope.of(context).unfocus();
 
-      String? errorMessage;
-      if (_isLogin) {
-        errorMessage = await authProvider.signInWithEmailAndPassword(email, password);
-      } else {
-        errorMessage = await authProvider.registerWithEmailAndPassword(email, password);
-      }
+    if (!(_formKey.currentState?.validate() ?? false)) return;
 
-      if (errorMessage != null) {
-        setState(() {
-          _errorMessage = errorMessage;
-        });
-      } else {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => TaskListScreen()),
-        );
-      }
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final email = _emailController.text;
+    final password = _passwordController.text;
+    final isLogin = _isLogin;
+
+    final navigator = Navigator.of(context);
+    Theme.of(context);
+
+    setState(() => _errorMessage = null);
+
+    final errorMessage = isLogin
+        ? await authProvider.signInWithEmailAndPassword(email, password)
+        : await authProvider.registerWithEmailAndPassword(email, password);
+
+    if (errorMessage != null) {
+      setState(() {
+        _errorMessage = errorMessage;
+      });
+    } else {
+      navigator.pushReplacement(
+        MaterialPageRoute(builder: (_) => const TaskListScreen()),
+      );
     }
   }
 }

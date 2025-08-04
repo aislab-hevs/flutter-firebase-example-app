@@ -6,7 +6,8 @@ class TaskItem extends StatelessWidget {
   final VoidCallback onDelete;
   final VoidCallback onTap;
 
-  TaskItem({
+  const TaskItem({
+    super.key,
     required this.task,
     required this.onDelete,
     required this.onTap,
@@ -16,13 +17,13 @@ class TaskItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(
-        task.title.length > 20 ? task.title.substring(0, 20) + '...' : task.title,
+        task.title.length > 20 ? '${task.title.substring(0, 20)}...' : task.title,
       ),
       subtitle: Text(
-        task.description.length > 50 ? task.description.substring(0, 50) + '...' : task.description,
+        task.description.length > 50 ? '${task.description.substring(0, 50)}...' : task.description,
       ),
       trailing: IconButton(
-        icon: Icon(Icons.delete),
+        icon: const Icon(Icons.delete),
         onPressed: () => _confirmDelete(context),
       ),
       onTap: onTap,
@@ -33,19 +34,19 @@ class TaskItem extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Confirm Delete'),
-        content: Text('Are you sure you want to delete this task?'),
+        title: const Text('Confirm Delete'),
+        content: const Text('Are you sure you want to delete this task?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
               onDelete();
               Navigator.of(context).pop();
             },
-            child: Text('Delete'),
+            child: const Text('Delete'),
           ),
         ],
       ),

@@ -16,10 +16,11 @@ class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isLogin = true;
-  String? _errorMessage;
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(_isLogin ? 'Login' : 'Register'),
@@ -61,25 +62,33 @@ class LoginScreenState extends State<LoginScreen> {
                 },
               ),
               const SizedBox(height: 20),
-              if (_errorMessage != null) ...[
+              if (authProvider.errorMessage != null) ...[
                 Text(
-                  _errorMessage!,
+                  authProvider.errorMessage!,
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
                 const SizedBox(height: 10),
               ],
               ElevatedButton(
-                onPressed: () => _authenticate(context),
-                child: Text(_isLogin ? 'Login' : 'Register'),
+                onPressed: authProvider.isLoading ? null : () => _authenticate(context),
+                child: authProvider.isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(_isLogin ? 'Login' : 'Register'),
               ),
 
               TextButton(
-                onPressed: () {
-                  setState(() {
-                    _isLogin = !_isLogin;
-                    _errorMessage = null;  // Clear the error message when switching modes
-                  });
-                },
+                onPressed: authProvider.isLoading
+                    ? null
+                    : () {
+                        context.read<AuthProvider>().clearError();
+                        setState(() {
+                          _isLogin = !_isLogin;
+                        });
+                      },
                 child: Text(_isLogin ? 'Create an account' : 'Already have an account? Login'),
               ),
             ],
@@ -100,19 +109,12 @@ class LoginScreenState extends State<LoginScreen> {
     final isLogin = _isLogin;
 
     final navigator = Navigator.of(context);
-    Theme.of(context);
 
-    setState(() => _errorMessage = null);
-
-    final errorMessage = isLogin
+    final success = isLogin
         ? await authProvider.signInWithEmailAndPassword(email, password)
         : await authProvider.registerWithEmailAndPassword(email, password);
 
-    if (errorMessage != null) {
-      setState(() {
-        _errorMessage = errorMessage;
-      });
-    } else {
+    if (success) {
       navigator.pushReplacement(
         MaterialPageRoute(builder: (_) => const TaskListScreen()),
       );

@@ -30,4 +30,36 @@ class Task {
       'isCompleted': isCompleted,
     };
   }
+
+  Task copyWith({
+    String? id,
+    String? title,
+    String? description,
+    bool? isCompleted,
+    DateTime? createdAt,
+  }) {
+    return Task(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      isCompleted: isCompleted ?? this.isCompleted,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Task &&
+        other.id == id &&
+        other.title == title &&
+        other.description == description &&
+        other.isCompleted == isCompleted &&
+        other.createdAt == createdAt;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(id, title, description, isCompleted, createdAt);
+  }
 }

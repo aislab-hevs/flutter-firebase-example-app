@@ -82,17 +82,20 @@ class TaskFormState extends State<TaskForm> {
   void _saveTask(BuildContext context) {
     if (_formKey.currentState?.validate() ?? false) {
       final taskProvider = Provider.of<TaskProvider>(context, listen: false);
-      final task = Task(
-        id: widget.task?.id ?? '',
-        title: _titleController.text,
-        description: _descriptionController.text,
-        isCompleted: _isCompleted,
-      );
 
       if (widget.task == null) {
-        taskProvider.addTask(task);
+        taskProvider.addTask(Task(
+          id: '',
+          title: _titleController.text,
+          description: _descriptionController.text,
+          isCompleted: _isCompleted,
+        ));
       } else {
-        taskProvider.updateTask(task);
+        taskProvider.updateTask(widget.task!.copyWith(
+          title: _titleController.text,
+          description: _descriptionController.text,
+          isCompleted: _isCompleted,
+        ));
       }
       Navigator.of(context).pop();
     }

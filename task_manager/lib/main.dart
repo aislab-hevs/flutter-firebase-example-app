@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'package:task_manager/repositories/task_repository.dart';
+import 'package:task_manager/repositories/firestore_task_repository.dart';
+import 'package:task_manager/services/firebase_auth_service.dart';
 import 'package:task_manager/utils/firebase_options.dart';
 import 'package:task_manager/utils/theme.dart';
 import 'providers/auth_provider.dart';
@@ -24,9 +25,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider(FirebaseAuthService())),
         ChangeNotifierProxyProvider<AuthProvider, TaskProvider>(
-          create: (_) => TaskProvider(TaskRepository()),
+          create: (_) => TaskProvider(FirestoreTaskRepository()),
           update: (_, authProvider, taskProvider) =>
           taskProvider!..updateAuthProvider(authProvider),
         ),

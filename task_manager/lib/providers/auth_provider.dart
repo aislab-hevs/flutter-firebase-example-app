@@ -3,11 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
 
 class AuthProvider with ChangeNotifier {
-  final AuthService _authService = AuthService();
+  final AuthService _authService;
   User? _user;
   User? get user => _user;
 
-  AuthProvider() {
+  AuthProvider(this._authService) {
     _authService.authStateChanges().listen((User? user) {
       _user = user;
       notifyListeners();

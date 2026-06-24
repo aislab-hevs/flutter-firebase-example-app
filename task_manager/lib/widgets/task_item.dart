@@ -16,6 +16,17 @@ class TaskItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      leading: task.imageUrl != null
+          ? ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Image.network(
+                task.imageUrl!,
+                width: 48,
+                height: 48,
+                fit: BoxFit.cover,
+              ),
+            )
+          : null,
       title: Text(
         task.title.length > 20 ? '${task.title.substring(0, 20)}...' : task.title,
       ),

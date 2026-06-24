@@ -3,6 +3,7 @@ class Task {
   final String title;
   final String description;
   final bool isCompleted;
+  final String? imageUrl;
   final DateTime? createdAt;
 
   Task({
@@ -10,6 +11,7 @@ class Task {
     required this.title,
     required this.description,
     required this.isCompleted,
+    this.imageUrl,
     this.createdAt,
   });
 
@@ -19,6 +21,7 @@ class Task {
       title: data['title'] ?? '',
       description: data['description'] ?? '',
       isCompleted: data['isCompleted'] ?? false,
+      imageUrl: data['imageUrl'] as String?,
       createdAt: data['createdAt'] as DateTime?,
     );
   }
@@ -28,6 +31,7 @@ class Task {
       'title': title,
       'description': description,
       'isCompleted': isCompleted,
+      'imageUrl': imageUrl,
     };
   }
 
@@ -36,6 +40,7 @@ class Task {
     String? title,
     String? description,
     bool? isCompleted,
+    String? imageUrl,
     DateTime? createdAt,
   }) {
     return Task(
@@ -43,6 +48,7 @@ class Task {
       title: title ?? this.title,
       description: description ?? this.description,
       isCompleted: isCompleted ?? this.isCompleted,
+      imageUrl: imageUrl ?? this.imageUrl,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -55,11 +61,12 @@ class Task {
         other.title == title &&
         other.description == description &&
         other.isCompleted == isCompleted &&
+        other.imageUrl == imageUrl &&
         other.createdAt == createdAt;
   }
 
   @override
   int get hashCode {
-    return Object.hash(id, title, description, isCompleted, createdAt);
+    return Object.hash(id, title, description, isCompleted, imageUrl, createdAt);
   }
 }
